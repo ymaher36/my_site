@@ -1,10 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import *
+
 posts = []
-
-
-def get_post_date(post):
-    return post['date']
 
 
 def index(request):
@@ -15,9 +12,12 @@ def index(request):
 
 
 def all_posts(request):
-    return render(request, 'blog/all-posts.html', {"all_posts": posts})
+    posts = Post.objects.all().order_by('-date')
+    return render(request, 'blog/all-posts.html', {
+        "all_posts": posts
+    })
 
 
 def selected_post(request, slug):
-    wanted_post = next(post for post in posts if post['slug'] == slug)
+    wanted_post = get_object_or_404(Post, slug=slug)
     return render(request, 'blog/selected-post.html', {"post": wanted_post})
