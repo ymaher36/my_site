@@ -26,7 +26,7 @@ class Author(models.Model):
 class Post(models.Model):
     title = models.CharField(max_length=150)
     excerpt = models.CharField(max_length=200)
-    image_name = models.CharField(max_length=50)
+    image = models.ImageField(upload_to='posts', null=True)
     date = models.DateTimeField(auto_now=True)
     slug = models.SlugField(default="", null=False, db_index=True)
     content = models.TextField(validators=[MinLengthValidator(25)])
@@ -35,3 +35,11 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title + ' - ' + self.author.__str__()
+
+
+class Comments(models.Model):
+    name = models.CharField(max_length=50)
+    email = models.EmailField()
+    datetime = models.DateTimeField(auto_now_add=True)
+    text = models.TextField()
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
